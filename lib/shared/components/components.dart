@@ -1,6 +1,7 @@
 import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shopapp/layout/shop_app/cubit/cubit.dart';
 
 import '../../modules/news_app/web_view/web_view_screen.dart';
 import '../../shared/cubit/cubit.dart';
@@ -63,11 +64,11 @@ Widget defaultFormField({
         ),
         suffixIcon: suffix != null
             ? IconButton(
-                onPressed: suffixPressed,
-                icon: Icon(
-                  suffix,
-                ),
-              )
+          onPressed: suffixPressed,
+          icon: Icon(
+            suffix,
+          ),
+        )
             : null,
         border: OutlineInputBorder(),
       ),
@@ -76,10 +77,10 @@ Widget defaultFormField({
 Widget defaultTextButton({
   @required Function function,
   @required String text,
-}) =>
-    TextButton(onPressed: function, child: Text(text.toUpperCase()));
+}) => TextButton(onPressed: function, child: Text(text.toUpperCase()));
 
-Widget buildTaskItem(Map model, context) => Dismissible(
+Widget buildTaskItem(Map model, context) =>
+    Dismissible(
       key: Key(model['id'].toString()),
       child: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -157,36 +158,39 @@ Widget tasksBuilder({
 }) =>
     ConditionalBuilder(
       condition: tasks.length > 0,
-      builder: (context) => ListView.separated(
-        itemBuilder: (context, index) {
-          return buildTaskItem(tasks[index], context);
-        },
-        separatorBuilder: (context, index) => myDivider(),
-        itemCount: tasks.length,
-      ),
-      fallback: (context) => Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.menu,
-              size: 100.0,
-              color: Colors.grey,
+      builder: (context) =>
+          ListView.separated(
+            itemBuilder: (context, index) {
+              return buildTaskItem(tasks[index], context);
+            },
+            separatorBuilder: (context, index) => myDivider(),
+            itemCount: tasks.length,
+          ),
+      fallback: (context) =>
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.menu,
+                  size: 100.0,
+                  color: Colors.grey,
+                ),
+                Text(
+                  'No Tasks Yet, Please Add Some Tasks',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey,
+                  ),
+                ),
+              ],
             ),
-            Text(
-              'No Tasks Yet, Please Add Some Tasks',
-              style: TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.bold,
-                color: Colors.grey,
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
     );
 
-Widget myDivider() => Padding(
+Widget myDivider() =>
+    Padding(
       padding: const EdgeInsetsDirectional.only(
         start: 20.0,
       ),
@@ -197,7 +201,8 @@ Widget myDivider() => Padding(
       ),
     );
 
-Widget buildArticleItem(article, context) => InkWell(
+Widget buildArticleItem(article, context) =>
+    InkWell(
       onTap: () {
         navigateTo(
           context,
@@ -234,7 +239,10 @@ Widget buildArticleItem(article, context) => InkWell(
                     Expanded(
                       child: Text(
                         '${article['title']}',
-                        style: Theme.of(context).textTheme.bodyText1,
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .bodyText1,
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -257,38 +265,41 @@ Widget buildArticleItem(article, context) => InkWell(
       ),
     );
 
-Widget articleBuilder(list, context, {isSearch = false}) => ConditionalBuilder(
+Widget articleBuilder(list, context, {isSearch = false}) =>
+    ConditionalBuilder(
       condition: list.length > 0,
-      builder: (context) => ListView.separated(
-        physics: BouncingScrollPhysics(),
-        itemBuilder: (context, index) => buildArticleItem(list[index], context),
-        separatorBuilder: (context, index) => myDivider(),
-        itemCount: 10,
-      ),
+      builder: (context) =>
+          ListView.separated(
+            physics: BouncingScrollPhysics(),
+            itemBuilder: (context, index) =>
+                buildArticleItem(list[index], context),
+            separatorBuilder: (context, index) => myDivider(),
+            itemCount: 10,
+          ),
       fallback: (context) =>
-          isSearch ? Container() : Center(child: CircularProgressIndicator()),
+      isSearch ? Container() : Center(child: CircularProgressIndicator()),
     );
 
-void navigateTo(context, widget) => Navigator.push(
+void navigateTo(context, widget) =>
+    Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => widget,
       ),
     );
 
-void navigateAndFinish(
-  context,
-  widget,
-) =>
+void navigateAndFinish(context,
+    widget,) =>
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
         builder: (context) => widget,
       ),
-      (route) {
+          (route) {
         return false;
       },
     );
+
 
 void showToast({@required String text, @required ToastState state}) {
   Fluttertoast.showToast(
@@ -300,21 +311,122 @@ void showToast({@required String text, @required ToastState state}) {
       textColor: Colors.white,
       fontSize: 10.0);
 }
-
 enum ToastState { SUCCESS, ERROR, WARNING }
 
 Color chooseToastColor(ToastState state) {
   Color color;
   switch (state) {
-    case ToastState.SUCCESS:
+    case ToastState.SUCCESS :
       color = Colors.green;
       break;
-    case ToastState.ERROR:
+    case ToastState.ERROR :
       color = Colors.red;
       break;
-    case ToastState.WARNING:
+    case ToastState.WARNING :
       color = Colors.amber;
       break;
   }
   return color;
 }
+
+
+Widget buildListProduct(
+    model,
+    context, {
+      bool isOldPrice = true,
+    }) =>
+    Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: Container(
+        height: 120.0,
+        child: Row(
+          children: [
+            Stack(
+              alignment: AlignmentDirectional.bottomStart,
+              children: [
+                Image(
+                  image: NetworkImage(model.image),
+                  width: 120.0,
+                  height: 120.0,
+                ),
+                if (model.discount != 0 && isOldPrice)
+                  Container(
+                    color: Colors.red,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 5.0,
+                    ),
+                    child: Text(
+                      'DISCOUNT',
+                      style: TextStyle(
+                        fontSize: 8.0,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+            SizedBox(
+              width: 20.0,
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    model.name,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 14.0,
+                      height: 1.3,
+                    ),
+                  ),
+                  Spacer(),
+                  Row(
+                    children: [
+                      Text(
+                        model.price.toString(),
+                        style: TextStyle(
+                          fontSize: 12.0,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 5.0,
+                      ),
+                      if (model.discount != 0 && isOldPrice)
+                        Text(
+                          model.oldPrice.toString(),
+                          style: TextStyle(
+                            fontSize: 10.0,
+                            color: Colors.grey,
+                            decoration: TextDecoration.lineThrough,
+                          ),
+                        ),
+                      Spacer(),
+                      IconButton(
+                        onPressed: () {
+                          ShopCubit.get(context).changeFavorites(model.id);
+                        },
+                        icon: CircleAvatar(
+                          radius: 15.0,
+                          backgroundColor:
+                          ShopCubit.get(context).favorites[model.id]
+                              ? Theme.of(context).primaryColor
+                              : Colors.grey,
+                          child: Icon(
+                            Icons.favorite_border,
+                            size: 14.0,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );

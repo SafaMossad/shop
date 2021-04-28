@@ -1,22 +1,45 @@
 import 'package:flutter/material.dart';
-import 'package:shopapp/modules/shop_app/on_boarding/login/login_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shopapp/layout/shop_app/cubit/cubit.dart';
+import 'package:shopapp/layout/shop_app/cubit/states.dart';
+import 'package:shopapp/modules/shop_app/on_boarding/search/search_screen.dart';
 import 'package:shopapp/shared/components/components.dart';
-import 'package:shopapp/shared/network/local/cache_helper.dart';
 
 class ShopLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Shop"),
-      ),
-      body: TextButton(
-          onPressed: () {
-            CacheHelper.removeData(key: "token").then((value) => {
-                  if (value) {navigateAndFinish(context, ShopLoginScreen())}
-                });
-          },
-          child: Text("Sign Out")),
-    );
+    var cubit = ShopCubit.get(context);
+    return BlocConsumer<ShopCubit, ShopStates>(
+        listener: (context, state) => {},
+        builder: (context, state) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text("Shop"),
+              actions: [
+                IconButton(
+                    icon: Icon(Icons.search),
+                    onPressed: () {
+                      navigateTo(context, SearchScreen( ));
+                    })
+              ],
+            ),
+            body: cubit.bottomScreens[cubit.currentIndex],
+            bottomNavigationBar: BottomNavigationBar(
+              onTap: (index) {
+                cubit.changeBottom(index);
+              },
+              currentIndex: cubit.currentIndex,
+              items: [
+                BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.apps), label: "Categories"),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.favorite), label: "favorite"),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.settings), label: "settings"),
+              ],
+            ),
+          );
+        });
   }
 }
